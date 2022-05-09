@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { RestException } from '../exceptions/rest.exception';
 import { IHttpRequest } from '../interfaces/http-request.interface';
 
-export class BaseClient {
+@Injectable()
+export class RestService {
   buildRequest(requestData: IHttpRequest) {
     const request: any = {
       method: requestData.method,
@@ -10,7 +12,7 @@ export class BaseClient {
     };
 
     if (requestData.data && requestData.method !== 'GET') {
-      request.payload = requestData.data;
+      request.data = requestData.data;
     }
 
     if (requestData.data && requestData.method === 'GET') {
@@ -20,6 +22,8 @@ export class BaseClient {
     if (requestData.headers) {
       request.headers = requestData.headers;
     }
+
+    console.log(request);
 
     return request;
   }

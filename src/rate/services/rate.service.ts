@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { RateClient } from '../clients/rate.client';
+import { RateRestClient } from '../clients/rate.rest';
 import { IRate } from '../interfaces/rate.interface';
 
 @Injectable()
 export class RateService {
-  constructor(private rateClient: RateClient) {}
+  constructor(private rateClient: RateRestClient) {}
 
   async getRates(): Promise<IRate[]> {
     return await this.rateClient.getRates();
