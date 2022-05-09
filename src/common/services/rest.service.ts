@@ -23,8 +23,6 @@ export class RestService {
       request.headers = requestData.headers;
     }
 
-    console.log(request);
-
     return request;
   }
 

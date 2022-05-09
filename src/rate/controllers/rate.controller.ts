@@ -7,11 +7,21 @@ export class RateController {
 
   @Get()
   async getRates() {
-    return await this.rateService.getRates();
+    const rate = await this.rateService.getRates();
+
+    return {
+      message: 'Rates retrieved successfully.',
+      data: rate,
+    };
   }
 
   @Get(':currency')
   async getRate(@Param('currency') currency: string) {
-    return await this.rateService.getRate(currency);
+    const rate = await this.rateService.getRate(currency);
+
+    return {
+      message: 'Rate retrieved successfully.',
+      data: rate,
+    };
   }
 }

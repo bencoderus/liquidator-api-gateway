@@ -1,4 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RestException } from 'src/common/exceptions/rest.exception';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
@@ -19,8 +23,6 @@ export class ClientRestClient extends RestService {
   }
 
   async getClientByApiKey(apiKey: string): Promise<IClient> {
-    console.log(apiKey);
-
     const requestData: IHttpRequest = {
       url: this.getUrl('/clients/credentials/validate/api-key'),
       method: 'POST',
@@ -46,8 +48,12 @@ export class ClientRestClient extends RestService {
 
   handleException(error: RestException) {
     const statusCode = error.responseStatusCode;
-    const message = error.response;
+    const response = error.response;
+    const message: string = response.message;
 
+    if (message.toLowerCase().includes('client not found')) {
+      throw new UnauthorizedException('API key is not valid.');
+    }
     throw new HttpException(message, statusCode);
   }
 }
