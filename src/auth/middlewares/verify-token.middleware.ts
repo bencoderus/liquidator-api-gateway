@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { ClientService } from 'src/client/services/client.service';
-import { IClientRequest } from '../../common/interfaces/client-request.interface';
+import { IClientRequest } from 'src/common/interfaces/client-request.interface';
 
 @Injectable()
 export class VerifyTokenMiddleware implements NestMiddleware {
