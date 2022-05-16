@@ -1,3 +1,4 @@
+import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -12,6 +13,31 @@ async function bootstrap() {
   const port = configService.get<number>('app.port');
   const appName = configService.get<string>('app.name');
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      errorHttpStatusCode: 422,
+      exceptionFactory: (errors: ValidationError[]) => {
+        return 'Hello';
+        return errors.map((error) => {
+          return error.property;
+        });
+      },
+      validationError: {
+        target: true,
+        value: true,
+      },
+      // exceptionFactory: (errors: ValidationError[]) => {
+      //   const errorsMessages = errors.map((error: ValidationError) => {
+      //     const format = {};
+      //     format[error.property] = Object.values(error.constraints);
+
+      //     return format;
+      //   });
+
+      //   console.log(errorsMessages);
+      // },
+    }),
+  );
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new ExceptionHandlerFilter(adapterHost));
 

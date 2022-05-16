@@ -6,10 +6,22 @@ import { IRate } from '../interfaces/rate.interface';
 export class RateService {
   constructor(private rateClient: RateRestClient) {}
 
+  /**
+   * Get rates from rate service.
+   *
+   * @returns {Promise<IRate>}
+   */
   async getRates(): Promise<IRate[]> {
     return await this.rateClient.getRates();
   }
 
+  /**
+   * Get rate using currency from rate service.
+   *
+   * @param {string} currency
+   *
+   * @returns {Promise<IRate>}
+   */
   async getRate(currency: string): Promise<IRate> {
     return await this.rateClient.getRate(currency);
   }

@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { sendResponse } from 'src/common/utils/helper.util';
+import { CreateOrderDto } from '../dto/create.dto';
 
-@Controller('order')
-export class OrderController {}
+@Controller('orders')
+export class OrderController {
+  @Post('/')
+  @HttpCode(200)
+  create(@Body() body: CreateOrderDto) {
+    return 'Hello world';
+  }
+}

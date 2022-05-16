@@ -1,4 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { SuccessResponse } from 'src/common/types/rest-response.type';
+import { sendResponse } from 'src/common/utils/helper.util';
 import { RateService } from '../services/rate.service';
 
 @Controller('rates')
@@ -6,22 +8,16 @@ export class RateController {
   constructor(private rateService: RateService) {}
 
   @Get()
-  async getRates() {
-    const rate = await this.rateService.getRates();
+  async getRates(): Promise<SuccessResponse> {
+    const rates = await this.rateService.getRates();
 
-    return {
-      message: 'Rates retrieved successfully.',
-      data: rate,
-    };
+    return sendResponse('Rates retrieved successfully.', rates);
   }
 
   @Get(':currency')
-  async getRate(@Param('currency') currency: string) {
+  async getRate(@Param('currency') currency: string): Promise<SuccessResponse> {
     const rate = await this.rateService.getRate(currency);
 
-    return {
-      message: 'Rate retrieved successfully.',
-      data: rate,
-    };
+    return sendResponse('Rate retrieved successfully.', rate);
   }
 }

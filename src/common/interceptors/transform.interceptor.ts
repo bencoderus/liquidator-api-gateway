@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { formatResponse } from '../utils/helper.util';
 
 export interface Response<T> {
   data: T;
@@ -26,7 +27,8 @@ export class TransformInterceptor<T>
     return next.handle().pipe(
       map((body) => {
         const { message, data } = body;
-        return { status, message, data };
+
+        return formatResponse(status, message, data) as Response<T>;
       }),
     );
   }

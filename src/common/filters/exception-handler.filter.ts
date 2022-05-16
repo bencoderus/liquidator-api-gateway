@@ -1,39 +1,38 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { ResponseException } from '../exceptions/response.exception';
 
 @Catch()
 export class ExceptionHandlerFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  catch(exception: unknown, host: ArgumentsHost): void {
+  public catch(exception: unknown, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
+    const responseException = new ResponseException(exception);
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const responseBody = this.getResponseBody(responseException);
 
-    const status = httpStatus >= 200 && httpStatus < 300;
-    let message = 'An error ocurred';
+    httpAdapter.reply(
+      ctx.getResponse(),
+      responseBody,
+      responseException.getStatusCode(),
+    );
+  }
 
-    if (exception instanceof HttpException) {
-      const response: any = exception.getResponse();
-      message = response.message ? response.message : response;
+  private getResponseBody(exception: ResponseException) {
+    const response = { status: false, message: exception.getMessage() };
+
+    if (exception.isValidationError()) {
+      const responseBody: any = exception.getValidationErrors();
+      response['error'] = responseBody.message;
     }
 
-    const responseBody = {
-      status,
-      message,
-    };
+    if (exception.isServerError()) {
+      response['exception'] = exception.getStackTrace();
+    }
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+    return response;
   }
 }
