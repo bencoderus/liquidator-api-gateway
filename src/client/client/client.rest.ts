@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { RestException } from 'src/common/exceptions/rest.exception';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
 import { RestService } from 'src/common/services/rest.service';
-import { IClient } from '../interfaces/client.interface';
+import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
 export class ClientRestClient extends RestService {
@@ -22,9 +22,9 @@ export class ClientRestClient extends RestService {
     return `${this.baseUrl}${path}`;
   }
 
-  async getClientByApiKey(apiKey: string): Promise<IClient> {
+  async getClientByApiKey(apiKey: string): Promise<ClientVerification> {
     const requestData: IHttpRequest = {
-      url: this.getUrl('/clients/credentials/validate/api-key'),
+      url: this.getUrl('/clients/verify/api-key'),
       method: 'POST',
       data: {
         apiKey,
@@ -42,7 +42,7 @@ export class ClientRestClient extends RestService {
         this.handleException(error);
       }
 
-      throw new HttpException('Unable to connect to rate service', 503);
+      throw new HttpException('Unable to connect to client service', 503);
     }
   }
 

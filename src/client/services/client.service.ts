@@ -1,7 +1,13 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ClientRestClient } from '../client/client.rest';
-import { IClient } from '../interfaces/client.interface';
+import { Client } from '../types/client.type';
+import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
 export class ClientService {
@@ -10,17 +16,22 @@ export class ClientService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async getClient(apiKey: string): Promise<IClient> {
-    const cached: IClient = await this.cacheManager.get(apiKey);
+  async verifyApiKey(apiKey: string): Promise<Client> {
+    const cached: Client = await this.cacheManager.get(apiKey);
 
     if (cached) {
       return cached;
     }
 
-    const client = await this.clientRestClient.getClientByApiKey(apiKey);
+    const response: ClientVerification =
+      await this.clientRestClient.getClientByApiKey(apiKey);
 
-    await this.cacheManager.set(apiKey, client);
+    if (!response.isValid) {
+      throw new UnauthorizedException('API key is not valid.');
+    }
 
-    return client;
+    await this.cacheManager.set(apiKey, response.client);
+
+    return response.client;
   }
 }

@@ -18,7 +18,7 @@ export class VerifyTokenMiddleware implements NestMiddleware {
       throw new UnauthorizedException('API key is not set.');
     }
 
-    const client = await this.clientService.getClient(apiKey);
+    const client = await this.clientService.verifyApiKey(apiKey);
 
     req.client = client;
 
