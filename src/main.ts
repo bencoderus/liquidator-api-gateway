@@ -6,7 +6,9 @@ import { ExceptionHandlerFilter } from './common/filters/exception-handler.filte
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   const adapterHost = app.get(HttpAdapterHost);
 
   const configService = app.get(ConfigService);
@@ -17,7 +19,6 @@ async function bootstrap() {
     new ValidationPipe({
       errorHttpStatusCode: 422,
       exceptionFactory: (errors: ValidationError[]) => {
-        return 'Hello';
         return errors.map((error) => {
           return error.property;
         });
@@ -26,16 +27,6 @@ async function bootstrap() {
         target: true,
         value: true,
       },
-      // exceptionFactory: (errors: ValidationError[]) => {
-      //   const errorsMessages = errors.map((error: ValidationError) => {
-      //     const format = {};
-      //     format[error.property] = Object.values(error.constraints);
-
-      //     return format;
-      //   });
-
-      //   console.log(errorsMessages);
-      // },
     }),
   );
   app.useGlobalInterceptors(new TransformInterceptor());
