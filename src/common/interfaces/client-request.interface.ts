@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { IClient } from 'src/client/interfaces/client.interface';
+import { Client } from 'src/client/types/client.type';
 
 export interface IClientRequest extends Request {
-  client: IClient;
+  client: Client;
 }
