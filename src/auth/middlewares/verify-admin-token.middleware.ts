@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NestMiddleware,
   UnauthorizedException,
@@ -11,7 +12,7 @@ import { getTokenFromHeader } from 'src/common/utils/helper.util';
 import { authHeader } from '../constants/auth.constant';
 
 @Injectable()
-export class VerifyTokenMiddleware implements NestMiddleware {
+export class VerifyAdminTokenMiddleware implements NestMiddleware {
   constructor(private clientService: ClientService) {}
 
   async use(req: IClientRequest, res: Response, next: NextFunction) {
@@ -23,6 +24,10 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     }
 
     const client: Client = await this.clientService.verifyApiKey(apiKey);
+
+    if (!client.isAdmin) {
+      throw new ForbiddenException("You don't have access to this resource.");
+    }
 
     req.client = client;
 

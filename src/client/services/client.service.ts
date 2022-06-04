@@ -26,12 +26,30 @@ export class ClientService {
     const response: ClientVerification =
       await this.clientRestClient.getClientByApiKey(apiKey);
 
-    if (!response.isValid) {
+    if (!response.authorized) {
       throw new UnauthorizedException('API key is not valid.');
     }
 
     await this.cacheManager.set(apiKey, response.client);
 
     return response.client;
+  }
+
+  async getProfile(clientCode: string): Promise<Client> {
+    const client: Client = await this.clientRestClient.getProfile(clientCode);
+
+    return client;
+  }
+
+  async getCredentials(clientCode: string): Promise<Client> {
+    const client: Client = await this.clientRestClient.getCredentials(
+      clientCode,
+    );
+
+    return client;
+  }
+
+  async updateWebhookUrl(clientCode: string, payload: any) {
+    return this.clientRestClient.updateWebhookUrl(clientCode, payload);
   }
 }

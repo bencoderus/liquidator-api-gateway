@@ -7,4 +7,7 @@ export default registerAs('services', () => ({
   clientService: {
     baseUrl: process.env.CLIENT_SERVICE_URL || '',
   },
+  tradeService: {
+    baseUrl: process.env.TRADE_SERVICE_URL || '',
+  },
 }));

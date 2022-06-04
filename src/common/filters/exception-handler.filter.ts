@@ -14,6 +14,10 @@ export class ExceptionHandlerFilter implements ExceptionFilter {
 
     const responseBody = this.getResponseBody(responseException);
 
+    if (this.shouldReport(responseException)) {
+      console.error(exception);
+    }
+
     httpAdapter.reply(
       ctx.getResponse(),
       responseBody,
@@ -21,12 +25,22 @@ export class ExceptionHandlerFilter implements ExceptionFilter {
     );
   }
 
+  private shouldReport(exception: ResponseException): boolean {
+    const statusCode = exception.getStatusCode();
+
+    if ([422].includes(statusCode)) {
+      return false;
+    }
+
+    return true;
+  }
+
   private getResponseBody(exception: ResponseException) {
     const response = { status: false, message: exception.getMessage() };
 
     if (exception.isValidationError()) {
       const responseBody: any = exception.getValidationErrors();
-      response['error'] = responseBody.message;
+      response['error'] = responseBody;
     }
 
     if (exception.isServerError()) {

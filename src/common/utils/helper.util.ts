@@ -1,5 +1,9 @@
 import { RestResponse } from '../types/rest-response.type';
 
+export const getTokenFromHeader = (header: string): string => {
+  return header ? header.split(' ').splice(1).join('') : '';
+};
+
 /**
  * Send REST response to client.
  *

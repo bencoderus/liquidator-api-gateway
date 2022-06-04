@@ -1,11 +1,13 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RestException } from 'src/common/exceptions/rest.exception';
+import { ValidationException } from 'src/common/exceptions/validation.exception';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
+import { RestParser } from 'src/common/services/rest-parser.service';
 import { RestService } from 'src/common/services/rest.service';
 import { ClientVerification } from '../types/verification.type';
 
@@ -22,38 +24,82 @@ export class ClientRestClient extends RestService {
     return `${this.baseUrl}${path}`;
   }
 
+  async getProfile(code: string) {
+    const requestData: IHttpRequest = {
+      url: this.getUrl(`/clients/${code}/profile`),
+      method: 'GET',
+    };
+
+    const response = await this.send(requestData);
+
+    return response.getData();
+  }
+
+  async getCredentials(code: string) {
+    const requestData: IHttpRequest = {
+      url: this.getUrl(`/clients/${code}/credentials`),
+      method: 'GET',
+    };
+
+    const response = await this.send(requestData);
+
+    return response.getData();
+  }
+
+  async updateWebhookUrl(
+    code: string,
+    payload: Record<string, any>,
+  ): Promise<ClientVerification> {
+    const requestData: IHttpRequest = {
+      url: this.getUrl(`/clients/${code}/webhooks`),
+      method: 'POST',
+      data: payload,
+    };
+
+    const response = await this.send(requestData);
+
+    const responseData = response.getData();
+    const message = response.responseExists() ? responseData.message : '';
+
+    if (response.getStatusCode() === 422) {
+      throw new ValidationException(message);
+    }
+
+    if (response.clientError()) {
+      throw new BadRequestException(message);
+    }
+
+    return response.getData();
+  }
+
   async getClientByApiKey(apiKey: string): Promise<ClientVerification> {
     const requestData: IHttpRequest = {
-      url: this.getUrl('/clients/verify/api-key'),
+      url: this.getUrl('/authorize'),
       method: 'POST',
       data: {
         apiKey,
       },
     };
 
-    return await this.send(requestData);
-  }
+    const response = await this.send(requestData);
 
-  async send(requestData: IHttpRequest): Promise<any> {
-    try {
-      return await this.sendRequest(requestData);
-    } catch (error: any) {
-      if (error instanceof RestException && error.hasResponse) {
-        this.handleException(error);
-      }
-
-      throw new HttpException('Unable to connect to client service', 503);
-    }
-  }
-
-  handleException(error: RestException) {
-    const statusCode = error.responseStatusCode;
-    const response = error.response;
-    const message: string = response.message;
+    const responseData = response.getData();
+    const message = response.clientError() ? responseData.message : '';
 
     if (message.toLowerCase().includes('client not found')) {
       throw new UnauthorizedException('API key is not valid.');
     }
-    throw new HttpException(message, statusCode);
+
+    return response.getData();
+  }
+
+  async send(requestData: IHttpRequest): Promise<RestParser> {
+    const response = await this.sendRequest(requestData);
+
+    if (response.connectionFailed() || response.serverError()) {
+      throw new HttpException('Unable to connect to client service', 503);
+    }
+
+    return response;
   }
 }

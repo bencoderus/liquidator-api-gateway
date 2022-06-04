@@ -24,7 +24,9 @@ export class RateRestClient extends RestService {
       method: 'GET',
     };
 
-    return await this.send(requestData);
+    const response = await this.send(requestData);
+
+    return response.getData();
   }
 
   async getRate(currency: string): Promise<IRate> {
@@ -33,25 +35,23 @@ export class RateRestClient extends RestService {
       method: 'GET',
     };
 
-    return await this.send(requestData);
+    const response = await this.send(requestData);
+
+    if (response.getStatusCode() === 404) {
+      throw new HttpException('Currency is not supported', 404);
+    }
+
+    return response.getData();
   }
 
   async send(requestData: IHttpRequest): Promise<any> {
-    try {
-      return await this.sendRequest(requestData);
-    } catch (error: any) {
-      if (error instanceof RestException && error.hasResponse) {
-        this.handleException(error);
-      }
+    const response = await this.sendRequest(requestData);
 
+    if (response.connectionFailed() || response.serverError()) {
+      console.log(response.getException());
       throw new HttpException('Unable to connect to rate service', 503);
     }
-  }
 
-  handleException(error: RestException) {
-    const statusCode = error.responseStatusCode;
-    const message = error.response;
-
-    throw new HttpException(message, statusCode);
+    return response;
   }
 }

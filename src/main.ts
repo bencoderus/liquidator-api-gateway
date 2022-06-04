@@ -9,11 +9,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
-  const adapterHost = app.get(HttpAdapterHost);
 
+  const adapterHost = app.get(HttpAdapterHost);
   const configService = app.get(ConfigService);
   const port = configService.get<number>('app.port');
   const appName = configService.get<string>('app.name');
+
+  app.enableCors();
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -29,7 +31,9 @@ async function bootstrap() {
       },
     }),
   );
+
   app.useGlobalInterceptors(new TransformInterceptor());
+
   app.useGlobalFilters(new ExceptionHandlerFilter(adapterHost));
 
   console.log(`${appName} is running on port ${port}`);
