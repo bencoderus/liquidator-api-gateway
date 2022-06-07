@@ -1,25 +1,25 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
-import { IRate } from '../interfaces/rate.interface';
 import { RestService } from 'src/common/services/rest.service';
+import { Currency } from '../types/currency';
 
 @Injectable()
-export class RateRestClient extends RestService {
+export class TradeRestClient extends RestService {
   private baseUrl: string;
 
   constructor(private configService: ConfigService) {
     super();
-    this.baseUrl = this.configService.get('services.rateService.baseUrl');
+    this.baseUrl = this.configService.get('services.tradeService.baseUrl');
   }
 
-  getUrl(path: string) {
+  private getUrl(path: string) {
     return `${this.baseUrl}${path}`;
   }
 
-  async getRates(): Promise<IRate[]> {
+  public async getCurrencies(): Promise<Currency[]> {
     const requestData: IHttpRequest = {
-      url: this.getUrl('/rates'),
+      url: this.getUrl('/currencies'),
       method: 'GET',
     };
 
@@ -28,27 +28,23 @@ export class RateRestClient extends RestService {
     return response.getData();
   }
 
-  async getRate(currency: string): Promise<IRate> {
+  public async getTickers(): Promise<string[]> {
     const requestData: IHttpRequest = {
-      url: this.getUrl('/rates/' + currency),
+      url: this.getUrl('/tickers'),
       method: 'GET',
     };
 
     const response = await this.send(requestData);
 
-    if (response.getStatusCode() === 404) {
-      throw new HttpException('Currency is not supported', 404);
-    }
-
     return response.getData();
   }
 
-  async send(requestData: IHttpRequest): Promise<any> {
+  private async send(requestData: IHttpRequest): Promise<any> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {
       console.log(response.getException());
-      throw new HttpException('Unable to connect to rate service', 503);
+      throw new HttpException('Unable to connect to trade service', 503);
     }
 
     return response;

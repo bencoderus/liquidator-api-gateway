@@ -1,7 +1,17 @@
-import { HttpException } from '@nestjs/common';
+import { UnprocessableEntityException, ValidationError } from '@nestjs/common';
 
-export class ValidationException extends HttpException {
-  constructor(message: string) {
-    super(message, 422);
+export class ValidationParserException extends UnprocessableEntityException {
+  constructor(errors: ValidationError[]) {
+    const errorBag = {};
+
+    errors.forEach((error: ValidationError) => {
+      errorBag[error.property] = Object.values(error.constraints);
+    });
+
+    super({
+      statusCode: 422,
+      message: 'Validation failed',
+      errors: errorBag,
+    });
   }
 }

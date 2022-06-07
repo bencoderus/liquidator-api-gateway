@@ -12,6 +12,6 @@ import { AuthModule } from 'src/auth/modules/auth.module';
 })
 export class RateModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(VerifyTokenMiddleware).forRoutes('rates');
+    consumer.apply(VerifyTokenMiddleware).forRoutes(RateController);
   }
 }

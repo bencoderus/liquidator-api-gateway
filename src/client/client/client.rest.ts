@@ -3,9 +3,9 @@ import {
   HttpException,
   Injectable,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ValidationException } from 'src/common/exceptions/validation.exception';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
 import { RestParser } from 'src/common/services/rest-parser.service';
 import { RestService } from 'src/common/services/rest.service';
@@ -62,7 +62,8 @@ export class ClientRestClient extends RestService {
     const message = response.responseExists() ? responseData.message : '';
 
     if (response.getStatusCode() === 422) {
-      throw new ValidationException(message);
+      const errors = responseData.errors;
+      throw new UnprocessableEntityException(errors);
     }
 
     if (response.clientError()) {
