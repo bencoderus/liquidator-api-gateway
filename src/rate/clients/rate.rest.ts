@@ -2,10 +2,10 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
 import { IRate } from '../interfaces/rate.interface';
-import { RestService } from 'src/common/services/rest.service';
+import { RestClient, RestParser } from '@liquidator/common';
 
 @Injectable()
-export class RateRestClient extends RestService {
+export class RateRestClient extends RestClient {
   private baseUrl: string;
 
   constructor(private configService: ConfigService) {
@@ -43,7 +43,7 @@ export class RateRestClient extends RestService {
     return response.getData();
   }
 
-  async send(requestData: IHttpRequest): Promise<any> {
+  async send(requestData: IHttpRequest): Promise<RestParser> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {

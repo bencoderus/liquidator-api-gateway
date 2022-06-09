@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Client } from 'src/client/types/client.type';
 import { TradeRestClient } from '../clients/trade.rest';
 import { Currency } from '../types/currency';
+import { Order } from '../types/order.type';
 
 @Injectable()
 export class TradeService {
@@ -12,5 +14,22 @@ export class TradeService {
 
   async getTickers(): Promise<string[]> {
     return this.tradeClient.getTickers();
+  }
+
+  async getOrders(clientCode: string): Promise<Order[]> {
+    return this.tradeClient.getOrders(clientCode);
+  }
+
+  async getOrder(clientCode: string, orderCode: string): Promise<Order> {
+    return this.tradeClient.getOrder(clientCode, orderCode);
+  }
+
+  async trade(clientCode: string, data: any): Promise<Order> {
+    const payload = {
+      clientCode,
+      ...data,
+    };
+
+    return this.tradeClient.trade(payload);
   }
 }

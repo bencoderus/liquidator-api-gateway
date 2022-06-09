@@ -1,11 +1,18 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
-import { RestService } from 'src/common/services/rest.service';
+import { RestClient, RestParser } from '@liquidator/common';
 import { Currency } from '../types/currency';
+import { Order } from '../types/order.type';
 
 @Injectable()
-export class TradeRestClient extends RestService {
+export class TradeRestClient extends RestClient {
   private baseUrl: string;
 
   constructor(private configService: ConfigService) {
@@ -39,7 +46,62 @@ export class TradeRestClient extends RestService {
     return response.getData();
   }
 
-  private async send(requestData: IHttpRequest): Promise<any> {
+  public async getOrders(clientCode: string): Promise<Order[]> {
+    const url = `/clients/${clientCode}/orders`;
+
+    const requestData: IHttpRequest = {
+      url: this.getUrl(url),
+      method: 'GET',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+
+    return responseData;
+  }
+
+  public async getOrder(clientCode: string, orderCode: string): Promise<Order> {
+    const url = `/clients/${clientCode}/orders/${orderCode}`;
+
+    const requestData: IHttpRequest = {
+      url: this.getUrl(url),
+      method: 'GET',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+
+    if (response.getStatusCode() === 404) {
+      throw new NotFoundException(responseData.message);
+    }
+
+    return responseData;
+  }
+
+  public async trade(data: any): Promise<Order> {
+    const requestData: IHttpRequest = {
+      url: this.getUrl('/trade'),
+      method: 'POST',
+      data,
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+
+    if (response.validationError()) {
+      const errors = responseData.errors;
+      throw new UnprocessableEntityException(errors);
+    }
+
+    if (response.clientError()) {
+      const message = responseData.message;
+      throw new BadRequestException(message);
+    }
+
+    return responseData;
+  }
+
+  private async send(requestData: IHttpRequest): Promise<RestParser> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {

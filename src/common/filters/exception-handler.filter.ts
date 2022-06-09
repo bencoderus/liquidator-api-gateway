@@ -28,7 +28,7 @@ export class ExceptionHandlerFilter implements ExceptionFilter {
   private shouldReport(exception: ResponseException): boolean {
     const statusCode = exception.getStatusCode();
 
-    if ([422].includes(statusCode)) {
+    if (statusCode >= 500 && statusCode < 600) {
       return false;
     }
 

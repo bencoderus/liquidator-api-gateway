@@ -1,3 +1,4 @@
+import { RestClient, RestParser } from '@liquidator/common';
 import {
   BadRequestException,
   HttpException,
@@ -7,12 +8,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
-import { RestParser } from 'src/common/services/rest-parser.service';
-import { RestService } from 'src/common/services/rest.service';
 import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
-export class ClientRestClient extends RestService {
+export class ClientRestClient extends RestClient {
   private baseUrl: string;
 
   constructor(private configService: ConfigService) {
