@@ -1,4 +1,4 @@
-import { RestClient, RestParser } from '@liquidator/common';
+import { RestClient, RestParser, RestRequest } from '@liquidator/common';
 import {
   BadRequestException,
   HttpException,
@@ -7,7 +7,6 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
 import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
@@ -24,7 +23,7 @@ export class ClientRestClient extends RestClient {
   }
 
   async getProfile(code: string) {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl(`/clients/${code}/profile`),
       method: 'GET',
     };
@@ -35,7 +34,7 @@ export class ClientRestClient extends RestClient {
   }
 
   async getCredentials(code: string) {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl(`/clients/${code}/credentials`),
       method: 'GET',
     };
@@ -49,7 +48,7 @@ export class ClientRestClient extends RestClient {
     code: string,
     payload: Record<string, any>,
   ): Promise<ClientVerification> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl(`/clients/${code}/webhooks`),
       method: 'POST',
       data: payload,
@@ -73,7 +72,7 @@ export class ClientRestClient extends RestClient {
   }
 
   async getClientByApiKey(apiKey: string): Promise<ClientVerification> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/authorize'),
       method: 'POST',
       data: {
@@ -93,7 +92,7 @@ export class ClientRestClient extends RestClient {
     return response.getData();
   }
 
-  async send(requestData: IHttpRequest): Promise<RestParser> {
+  async send(requestData: RestRequest): Promise<RestParser> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {

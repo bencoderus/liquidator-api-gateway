@@ -601,10 +601,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@liquidator/common@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@liquidator/common/-/common-0.0.6.tgz#45ac2aca3df86be67d375638cb00f476dbad0978"
-  integrity sha512-UdDfDKwgtAmJKFeIIwFqDcsomvm67sczXISGZmPNAXQPLJ0sfp0UAYRwOt+dode8WFD+/nuDeKx4yezCOPnVtA==
+"@liquidator/common@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@liquidator/common/-/common-0.0.7.tgz#4f2a482ebc81901519757173f4297b9575ec1ab2"
+  integrity sha512-GeXoaZseEtDFTBAxHwx8vumKhlGJvc3/WTY3Z1Nai1KIdK41WlG844nS9+nWwom5NdmIMLDt2C/TEyBCNTpguA==
   dependencies:
     axios "^0.27.2"
 

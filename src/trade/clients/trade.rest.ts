@@ -6,10 +6,10 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
-import { RestClient, RestParser } from '@liquidator/common';
+import { RestClient, RestParser, RestRequest } from '@liquidator/common';
 import { Currency } from '../types/currency';
 import { Order } from '../types/order.type';
+import { PaginationData } from 'src/common/types/pagination.type';
 
 @Injectable()
 export class TradeRestClient extends RestClient {
@@ -25,7 +25,7 @@ export class TradeRestClient extends RestClient {
   }
 
   public async getCurrencies(): Promise<Currency[]> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/currencies'),
       method: 'GET',
     };
@@ -36,7 +36,7 @@ export class TradeRestClient extends RestClient {
   }
 
   public async getTickers(): Promise<string[]> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/tickers'),
       method: 'GET',
     };
@@ -46,13 +46,24 @@ export class TradeRestClient extends RestClient {
     return response.getData();
   }
 
-  public async getOrders(clientCode: string): Promise<Order[]> {
+  public async getOrders(
+    clientCode: string,
+    paginationData: PaginationData,
+  ): Promise<Order[]> {
     const url = `/clients/${clientCode}/orders`;
 
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl(url),
       method: 'GET',
+      data: {
+        page: paginationData.pageNumber,
+        limit: paginationData.perPage,
+      },
     };
+
+    console.log(requestData);
+
+    console.log(requestData);
 
     const response = await this.send(requestData);
     const responseData = response.getData();
@@ -63,7 +74,7 @@ export class TradeRestClient extends RestClient {
   public async getOrder(clientCode: string, orderCode: string): Promise<Order> {
     const url = `/clients/${clientCode}/orders/${orderCode}`;
 
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl(url),
       method: 'GET',
     };
@@ -79,7 +90,7 @@ export class TradeRestClient extends RestClient {
   }
 
   public async trade(data: any): Promise<Order> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/trade'),
       method: 'POST',
       data,
@@ -101,7 +112,7 @@ export class TradeRestClient extends RestClient {
     return responseData;
   }
 
-  private async send(requestData: IHttpRequest): Promise<RestParser> {
+  private async send(requestData: RestRequest): Promise<RestParser> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {

@@ -1,8 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IHttpRequest } from 'src/common/interfaces/http-request.interface';
 import { IRate } from '../interfaces/rate.interface';
-import { RestClient, RestParser } from '@liquidator/common';
+import { RestClient, RestRequest, RestParser } from '@liquidator/common';
 
 @Injectable()
 export class RateRestClient extends RestClient {
@@ -18,7 +17,7 @@ export class RateRestClient extends RestClient {
   }
 
   async getRates(): Promise<IRate[]> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/rates'),
       method: 'GET',
     };
@@ -29,7 +28,7 @@ export class RateRestClient extends RestClient {
   }
 
   async getRate(currency: string): Promise<IRate> {
-    const requestData: IHttpRequest = {
+    const requestData: RestRequest = {
       url: this.getUrl('/rates/' + currency),
       method: 'GET',
     };
@@ -43,7 +42,7 @@ export class RateRestClient extends RestClient {
     return response.getData();
   }
 
-  async send(requestData: IHttpRequest): Promise<RestParser> {
+  async send(requestData: RestRequest): Promise<RestParser> {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {
