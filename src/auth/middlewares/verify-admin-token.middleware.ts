@@ -9,14 +9,14 @@ import { ClientService } from 'src/client/services/client.service';
 import { Client } from 'src/client/types/client.type';
 import { IClientRequest } from 'src/common/interfaces/client-request.interface';
 import { getTokenFromHeader } from 'src/common/utils/helper.util';
-import { authHeader } from '../constants/auth.constant';
+import { AUTH_HEADER } from '../constants/auth.constant';
 
 @Injectable()
 export class VerifyAdminTokenMiddleware implements NestMiddleware {
   constructor(private clientService: ClientService) {}
 
   async use(req: IClientRequest, res: Response, next: NextFunction) {
-    const header = req.headers[authHeader];
+    const header = req.headers[AUTH_HEADER];
     const apiKey = getTokenFromHeader(header);
 
     if (!apiKey) {
