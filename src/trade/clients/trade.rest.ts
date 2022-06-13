@@ -2,6 +2,7 @@ import {
   BadRequestException,
   HttpException,
   Injectable,
+  Logger,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { PaginationData } from 'src/common/types/pagination.type';
 @Injectable()
 export class TradeRestClient extends RestClient {
   private baseUrl: string;
+  private readonly logger: Logger = new Logger();
 
   constructor(private configService: ConfigService) {
     super();
@@ -60,10 +62,6 @@ export class TradeRestClient extends RestClient {
         limit: paginationData.perPage,
       },
     };
-
-    console.log(requestData);
-
-    console.log(requestData);
 
     const response = await this.send(requestData);
     const responseData = response.getData();
@@ -116,7 +114,7 @@ export class TradeRestClient extends RestClient {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {
-      console.log(response.getException());
+      this.logger.error(response.getException());
       throw new HttpException('Unable to connect to trade service', 503);
     }
 

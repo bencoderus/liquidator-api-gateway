@@ -1,4 +1,5 @@
 import {
+  Logger,
   ValidationError,
   ValidationPipe,
   VersioningType,
@@ -11,8 +12,11 @@ import { ExceptionHandlerFilter } from './common/filters/exception-handler.filte
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
+  const logger = new Logger();
+
   const app = await NestFactory.create(AppModule, {
     cors: true,
+    logger,
   });
 
   app.enableVersioning({
@@ -38,7 +42,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ExceptionHandlerFilter(adapterHost));
 
-  console.log(`${appName} is running on port ${port}`);
+  logger.log(`${appName} is running on port ${port}`);
 
   await app.listen(port);
 }

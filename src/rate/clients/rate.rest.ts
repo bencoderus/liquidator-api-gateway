@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IRate } from '../interfaces/rate.interface';
 import { RestClient, RestRequest, RestParser } from '@liquidator/common';
@@ -6,6 +6,7 @@ import { RestClient, RestRequest, RestParser } from '@liquidator/common';
 @Injectable()
 export class RateRestClient extends RestClient {
   private baseUrl: string;
+  private readonly logger: Logger = new Logger();
 
   constructor(private configService: ConfigService) {
     super();
@@ -46,7 +47,7 @@ export class RateRestClient extends RestClient {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {
-      console.log(response.getException());
+      this.logger.error(response.getException());
       throw new HttpException('Unable to connect to rate service', 503);
     }
 
