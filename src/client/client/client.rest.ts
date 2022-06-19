@@ -3,6 +3,7 @@ import {
   BadRequestException,
   HttpException,
   Injectable,
+  Logger,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { ClientVerification } from '../types/verification.type';
 @Injectable()
 export class ClientRestClient extends RestClient {
   private baseUrl: string;
+  private logger: Logger = new Logger();
 
   constructor(private configService: ConfigService) {
     super();
@@ -96,6 +98,7 @@ export class ClientRestClient extends RestClient {
     const response = await this.sendRequest(requestData);
 
     if (response.connectionFailed() || response.serverError()) {
+      this.logger.error(response.getException());
       throw new HttpException('Unable to connect to client service', 503);
     }
 

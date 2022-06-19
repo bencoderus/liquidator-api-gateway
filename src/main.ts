@@ -1,8 +1,10 @@
+// import { AppLogger } from '@liquidator/common';
+import { AppLogger } from '@liquidator/common';
 import {
-  Logger,
   ValidationError,
   ValidationPipe,
   VersioningType,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
@@ -12,7 +14,7 @@ import { ExceptionHandlerFilter } from './common/filters/exception-handler.filte
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const logger = new Logger();
+  const logger = new AppLogger('Api-Gateway');
 
   const app = await NestFactory.create(AppModule, {
     cors: true,
@@ -42,8 +44,8 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ExceptionHandlerFilter(adapterHost));
 
-  logger.log(`${appName} is running on port ${port}`);
-
   await app.listen(port);
+
+  logger.log(`${appName} is running on port ${port}`);
 }
 bootstrap();
