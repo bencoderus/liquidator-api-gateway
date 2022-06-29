@@ -1,5 +1,5 @@
 import { CacheModule, MiddlewareConsumer, Module } from '@nestjs/common';
-import { VerifyTokenMiddleware } from 'src/auth/middlewares/verify-token.middleware';
+import { VerifyTokenMiddleware } from '../../auth/middlewares/verify-token.middleware';
 import { ClientRestClient } from '../client/client.rest';
 import { ClientController } from '../controllers/client.controller';
 import { ClientService } from '../services/client.service';

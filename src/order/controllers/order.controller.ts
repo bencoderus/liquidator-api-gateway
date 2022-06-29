@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { sendResponse } from 'src/common/utils/helper.util';
+import { sendResponse } from '../../common/utils/helper.util';
 import { CreateOrderDto } from '../dto/create.dto';
 
 @Controller('orders')

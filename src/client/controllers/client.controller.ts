@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { SuccessResponse } from 'src/common/types/rest-response.type';
-import { sendResponse } from 'src/common/utils/helper.util';
+import { Auth } from '../../auth/decorators/auth.decorator';
+import { SuccessResponse } from '../../common/types/rest-response.type';
+import { sendResponse } from '../../common/utils/helper.util';
 import { ClientService } from '../services/client.service';
 import { Client } from '../types/client.type';
 

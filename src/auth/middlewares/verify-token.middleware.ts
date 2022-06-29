@@ -4,10 +4,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { ClientService } from 'src/client/services/client.service';
-import { Client } from 'src/client/types/client.type';
-import { IClientRequest } from 'src/common/interfaces/client-request.interface';
-import { getTokenFromHeader } from 'src/common/utils/helper.util';
+import { ClientService } from '../../client/services/client.service';
+import { Client } from '../../client/types/client.type';
+import { IClientRequest } from '../../common/interfaces/client-request.interface';
+import { getTokenFromHeader } from '../../common/utils/helper.util';
 import { AUTH_HEADER } from '../constants/auth.constant';
 
 @Injectable()

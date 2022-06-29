@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { Client } from 'src/client/types/client.type';
-import { SuccessResponse } from 'src/common/types/rest-response.type';
-import { sendResponse } from 'src/common/utils/helper.util';
+import { Auth } from '../../auth/decorators/auth.decorator';
+import { Client } from '../../client/types/client.type';
+import { SuccessResponse } from '../../common/types/rest-response.type';
+import { sendResponse } from '../../common/utils/helper.util';
 import { TradeService } from '../services/trade.service';
 
 @Controller('trade')

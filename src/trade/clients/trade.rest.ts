@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { RestClient, RestParser, RestRequest } from '@liquidator/common';
 import { Currency } from '../types/currency';
 import { Order } from '../types/order.type';
-import { PaginationData } from 'src/common/types/pagination.type';
+import { PaginationData } from '../../common/types/pagination.type';
 
 @Injectable()
 export class TradeRestClient extends RestClient {

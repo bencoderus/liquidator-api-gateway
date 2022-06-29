@@ -1,10 +1,10 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { Client } from 'src/client/types/client.type';
-import { Pagination } from 'src/common/decorators/pagination.decorator';
-import { PaginationData } from 'src/common/types/pagination.type';
-import { SuccessResponse } from 'src/common/types/rest-response.type';
-import { sendResponse } from 'src/common/utils/helper.util';
+import { Auth } from '../../auth/decorators/auth.decorator';
+import { Client } from '../../client/types/client.type';
+import { Pagination } from '../../common/decorators/pagination.decorator';
+import { PaginationData } from '../../common/types/pagination.type';
+import { SuccessResponse } from '../../common/types/rest-response.type';
+import { sendResponse } from '../../common/utils/helper.util';
 import { TradeService } from '../services/trade.service';
 
 @Controller('market-orders')

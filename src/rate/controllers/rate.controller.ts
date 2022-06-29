@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { SuccessResponse } from 'src/common/types/rest-response.type';
-import { sendResponse } from 'src/common/utils/helper.util';
+import { SuccessResponse } from '../../common/types/rest-response.type';
+import { sendResponse } from '../../common/utils/helper.util';
 import { RateService } from '../services/rate.service';
 
 @Controller('rates')

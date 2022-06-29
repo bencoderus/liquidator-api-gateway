@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IClientRequest } from 'src/common/interfaces/client-request.interface';
+import { IClientRequest } from '../../common/interfaces/client-request.interface';
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,

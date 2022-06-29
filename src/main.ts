@@ -1,13 +1,12 @@
-// import { AppLogger } from '@liquidator/common';
 import { AppLogger } from '@liquidator/common';
 import {
   ValidationError,
   ValidationPipe,
   VersioningType,
-  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ValidationParserException } from './common/exceptions/validation.exception';
 import { ExceptionHandlerFilter } from './common/filters/exception-handler.filter';
@@ -24,6 +23,8 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  app.use(helmet());
 
   const adapterHost = app.get(HttpAdapterHost);
   const configService = app.get(ConfigService);
@@ -48,4 +49,5 @@ async function bootstrap() {
 
   logger.log(`${appName} is running on port ${port}`);
 }
+
 bootstrap();

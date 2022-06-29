@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationData } from 'src/common/types/pagination.type';
+import { PaginationData } from '../../common/types/pagination.type';
 import { TradeRestClient } from '../clients/trade.rest';
 import { Currency } from '../types/currency';
 import { Order } from '../types/order.type';

@@ -1,6 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { ClientRestClient } from 'src/client/client/client.rest';
-import { ClientService } from 'src/client/services/client.service';
+import { ClientRestClient } from '../../client/client/client.rest';
+import { ClientService } from '../../client/services/client.service';
 
 @Module({
   imports: [CacheModule.register()],
