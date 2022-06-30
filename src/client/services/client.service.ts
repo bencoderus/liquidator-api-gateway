@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import { PaginationData } from 'src/common/types/pagination.type';
 import { ClientRestClient } from '../client/client.rest';
 import { Client } from '../types/client.type';
 import { ClientVerification } from '../types/verification.type';
@@ -44,6 +45,38 @@ export class ClientService {
   async getCredentials(clientCode: string): Promise<Client> {
     const client: Client = await this.clientRestClient.getCredentials(
       clientCode,
+    );
+
+    return client;
+  }
+
+  async getClient(clientCode: string): Promise<Client> {
+    const client: Client = await this.clientRestClient.getClient(clientCode);
+
+    return client;
+  }
+
+  async getClients(paginationData: PaginationData): Promise<Client[]> {
+    const client: Client[] = await this.clientRestClient.getClients(
+      paginationData,
+    );
+
+    return client;
+  }
+
+  async createClient(payload: Record<string, any>): Promise<Client> {
+    const client: Client = await this.clientRestClient.createClient(payload);
+
+    return client;
+  }
+
+  async updateClientStatus(
+    code: string,
+    payload: Record<string, any>,
+  ): Promise<Client> {
+    const client: Client = await this.clientRestClient.updateClientStatus(
+      code,
+      payload,
     );
 
     return client;

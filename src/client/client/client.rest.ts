@@ -2,12 +2,15 @@ import { RestClient, RestParser, RestRequest } from '@liquidator/common';
 import {
   BadRequestException,
   HttpException,
+  HttpStatus,
   Injectable,
   Logger,
+  NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PaginationData } from 'src/common/types/pagination.type';
 import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
@@ -31,6 +34,88 @@ export class ClientRestClient extends RestClient {
     };
 
     const response = await this.send(requestData);
+
+    return response.getData();
+  }
+
+  async getClients(paginationData: PaginationData) {
+    const requestData: RestRequest = {
+      url: this.getUrl(`/clients`),
+      method: 'GET',
+      data: {
+        page: paginationData.pageNumber,
+        limit: paginationData.perPage,
+      },
+    };
+
+    const response = await this.send(requestData);
+
+    return response.getData();
+  }
+
+  async getClient(code: string) {
+    const requestData: RestRequest = {
+      url: this.getUrl(`/clients/${code}`),
+      method: 'GET',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+    const message = response.responseExists() ? responseData.message : '';
+
+    if (response.getStatusCode() === HttpStatus.NOT_FOUND) {
+      throw new NotFoundException(message);
+    }
+
+    return response.getData();
+  }
+
+  async createClient(payload: Record<string, any>) {
+    const requestData: RestRequest = {
+      url: this.getUrl(`/clients`),
+      data: payload,
+      method: 'POST',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+    const message = response.responseExists() ? responseData.message : '';
+
+    if (response.getStatusCode() === 422) {
+      const errors = responseData.errors;
+      throw new UnprocessableEntityException(errors);
+    }
+
+    if (response.getStatusCode() === 400) {
+      throw new BadRequestException(message);
+    }
+
+    return response.getData();
+  }
+
+  async updateClientStatus(code: string, payload: Record<string, any>) {
+    const requestData: RestRequest = {
+      url: this.getUrl(`/clients/${code}/status`),
+      data: payload,
+      method: 'PATCH',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+    const message = response.responseExists() ? responseData.message : '';
+
+    if (response.getStatusCode() === HttpStatus.UNPROCESSABLE_ENTITY) {
+      const errors = responseData.errors;
+      throw new UnprocessableEntityException(errors);
+    }
+
+    if (response.getStatusCode() === HttpStatus.NOT_FOUND) {
+      throw new NotFoundException(message);
+    }
+
+    if (response.getStatusCode() === HttpStatus.BAD_REQUEST) {
+      throw new BadRequestException(message);
+    }
 
     return response.getData();
   }
@@ -61,7 +146,7 @@ export class ClientRestClient extends RestClient {
     const responseData = response.getData();
     const message = response.responseExists() ? responseData.message : '';
 
-    if (response.getStatusCode() === 422) {
+    if (response.getStatusCode() === HttpStatus.UNPROCESSABLE_ENTITY) {
       const errors = responseData.errors;
       throw new UnprocessableEntityException(errors);
     }

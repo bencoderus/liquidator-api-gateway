@@ -5,7 +5,7 @@ import { sendResponse } from '../../common/utils/helper.util';
 import { ClientService } from '../services/client.service';
 import { Client } from '../types/client.type';
 
-@Controller('clients')
+@Controller('clients/settings')
 export class ClientController {
   constructor(private clientService: ClientService) {}
 

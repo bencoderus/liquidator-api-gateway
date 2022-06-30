@@ -31,10 +31,10 @@ export class ExceptionHandlerFilter implements ExceptionFilter {
     const statusCode = exception.getStatusCode();
 
     if (statusCode >= 500 && statusCode < 600) {
-      return false;
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   private getResponseBody(exception: ResponseException) {
