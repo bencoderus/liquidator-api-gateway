@@ -5,8 +5,8 @@ WORKDIR /app
 COPY . .
 COPY package*.json ./
 
-RUN yarn
+RUN yarn --production
 
 EXPOSE 7500
 
-CMD ["yarn", "run", "serve"]
+CMD ["yarn", "start"]
