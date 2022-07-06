@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NestMiddleware,
   UnauthorizedException,
@@ -23,6 +24,14 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     }
 
     const client: Client = await this.clientService.verifyApiKey(apiKey);
+
+    if (client.isAdmin) {
+      throw new ForbiddenException('This resource is for users only.');
+    }
+
+    if (!client.isActive) {
+      throw new ForbiddenException('Your account has been disabled');
+    }
 
     req.client = client;
 

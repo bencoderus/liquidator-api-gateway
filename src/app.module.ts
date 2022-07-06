@@ -7,6 +7,5 @@ import { TradeModule } from './trade/modules/trade.module';
 
 @Module({
   imports: [CommonModule, RateModule, ClientModule, OrderModule, TradeModule],
-  providers: [],
 })
 export class AppModule {}

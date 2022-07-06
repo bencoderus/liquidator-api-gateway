@@ -29,6 +29,10 @@ export class VerifyAdminTokenMiddleware implements NestMiddleware {
       throw new ForbiddenException("You don't have access to this resource.");
     }
 
+    if (!client.isActive) {
+      throw new ForbiddenException('Your account has been disabled');
+    }
+
     req.client = client;
 
     next();

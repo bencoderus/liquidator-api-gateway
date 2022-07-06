@@ -9,7 +9,7 @@ export class HealthController {
 
   @Get('health-check')
   public getHealthStatus(): SuccessResponse {
-    return sendResponse('Health check status retrieved successfully.', {
+    return sendResponse('Health check retrieved successfully.', {
       status: 'OK',
       name: this.configService.get('app.name'),
       environment: this.configService.get('app.environment'),

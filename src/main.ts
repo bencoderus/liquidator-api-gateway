@@ -47,7 +47,10 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  logger.log(`${appName} is running on port ${port}`);
+  process.on('SIGINT', () => process.exit(0));
+  process.on('SIGTERM', () => process.exit(0));
+
+  logger.log(`${appName} is running on the port ${port}.`);
 }
 
 bootstrap();
