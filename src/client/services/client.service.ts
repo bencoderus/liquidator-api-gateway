@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { PaginationData } from 'src/common/types/pagination.type';
+import { PaginationData } from '../../common/types/pagination.type';
 import { ClientRestClient } from '../client/client.rest';
 import { Client } from '../types/client.type';
 import { ClientVerification } from '../types/verification.type';

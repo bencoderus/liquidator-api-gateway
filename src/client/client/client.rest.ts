@@ -10,7 +10,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PaginationData } from 'src/common/types/pagination.type';
+import { PaginationData } from '../../common/types/pagination.type';
 import { ClientVerification } from '../types/verification.type';
 
 @Injectable()
