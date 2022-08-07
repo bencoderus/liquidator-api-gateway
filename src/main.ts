@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ValidationParserException } from './common/exceptions/validation.exception';
 import { ExceptionHandlerFilter } from './common/filters/exception-handler.filter';
+import { NewrelicInterceptor } from './common/interceptors/newrelic.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
@@ -42,6 +43,8 @@ async function bootstrap() {
   app.useGlobalPipes(validationHandler);
 
   app.useGlobalInterceptors(new TransformInterceptor());
+
+  app.useGlobalInterceptors(new NewrelicInterceptor());
 
   app.useGlobalFilters(new ExceptionHandlerFilter(adapterHost));
 
