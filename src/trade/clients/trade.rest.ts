@@ -87,6 +87,27 @@ export class TradeRestClient extends RestClient {
     return responseData;
   }
 
+  public async cancelOrder(
+    clientCode: string,
+    orderCode: string,
+  ): Promise<Order> {
+    const url = `/clients/${clientCode}/orders/${orderCode}/cancel`;
+
+    const requestData: RestRequest = {
+      url: this.getUrl(url),
+      method: 'POST',
+    };
+
+    const response = await this.send(requestData);
+    const responseData = response.getData();
+
+    if ([404, 400].includes(response.getStatusCode())) {
+      throw new NotFoundException(responseData.message);
+    }
+
+    return responseData;
+  }
+
   public async trade(data: any): Promise<Order> {
     const requestData: RestRequest = {
       url: this.getUrl('/trade'),

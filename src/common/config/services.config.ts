@@ -10,4 +10,7 @@ export default registerAs('services', () => ({
   tradeService: {
     baseUrl: process.env.TRADE_SERVICE_URL || '',
   },
+  walletService: {
+    baseUrl: process.env.WALLET_SERVICE_URL || '',
+  },
 }));

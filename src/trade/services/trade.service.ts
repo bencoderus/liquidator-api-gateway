@@ -27,6 +27,10 @@ export class TradeService {
     return this.tradeClient.getOrder(clientCode, orderCode);
   }
 
+  async cancelOrder(clientCode: string, orderCode: string): Promise<Order> {
+    return this.tradeClient.cancelOrder(clientCode, orderCode);
+  }
+
   async trade(clientCode: string, data: any): Promise<Order> {
     const payload = {
       clientCode,

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { Auth } from '../../auth/decorators/auth.decorator';
 import { Client } from '../../client/types/client.type';
 import { Pagination } from '../../common/decorators/pagination.decorator';
@@ -32,5 +32,15 @@ export class OrderController {
     const order = await this.tradeService.getOrder(client.code, code);
 
     return sendResponse('Order retrieved successfully', order);
+  }
+
+  @Post('/:code/cancel')
+  public async cancelOrder(
+    @Auth() client: Client,
+    @Param('code') code: string,
+  ): Promise<SuccessResponse> {
+    const order = await this.tradeService.cancelOrder(client.code, code);
+
+    return sendResponse('Order cancelled successfully', order);
   }
 }
