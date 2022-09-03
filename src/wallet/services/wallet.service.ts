@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PaginationData } from '../../common/types/pagination.type';
 import { WalletRestClient } from '../clients/wallet.rest';
 import { WalletData } from '../type/wallet.type';
 
@@ -15,5 +16,17 @@ export class WalletService {
     walletCode: string,
   ): Promise<WalletData> {
     return this.walletClient.getWallet(clientCode, walletCode);
+  }
+
+  public async getWalletHistory(
+    clientCode: string,
+    walletCode: string,
+    paginationData: PaginationData,
+  ): Promise<WalletData> {
+    return this.walletClient.getWalletHistory(
+      clientCode,
+      walletCode,
+      paginationData,
+    );
   }
 }
