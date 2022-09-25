@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import * as crypto from 'crypto';
 import { PaginationData } from '../../common/types/pagination.type';
 import { ClientRestClient } from '../client/client.rest';
 import { Client } from '../types/client.type';
@@ -17,8 +18,13 @@ export class ClientService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  private generateCacheKey(value: string): string {
+    return crypto.createHash('md5').update(value).digest('hex').toString();
+  }
+
   async verifyApiKey(apiKey: string): Promise<Client> {
-    const cached: Client = await this.cacheManager.get(apiKey);
+    const cacheKey = this.generateCacheKey(apiKey);
+    const cached: Client = await this.cacheManager.get(cacheKey);
 
     if (cached) {
       return cached;
@@ -31,7 +37,7 @@ export class ClientService {
       throw new UnauthorizedException('API key is not valid.');
     }
 
-    await this.cacheManager.set(apiKey, response.client);
+    await this.cacheManager.set(cacheKey, response.client, { ttl: 900 });
 
     return response.client;
   }
