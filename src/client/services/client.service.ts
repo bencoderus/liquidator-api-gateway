@@ -62,6 +62,18 @@ export class ClientService {
     return client;
   }
 
+  async regenerateCredential(
+    code: string,
+    currentApiKey: string,
+  ): Promise<any> {
+    const response = await this.clientRestClient.regenerateCredential(code);
+    const cacheKey = this.generateCacheKey(currentApiKey);
+
+    await this.cacheManager.del(cacheKey);
+
+    return response;
+  }
+
   async getClients(paginationData: PaginationData): Promise<Client[]> {
     const client: Client[] = await this.clientRestClient.getClients(
       paginationData,

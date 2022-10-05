@@ -34,6 +34,7 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     }
 
     req.client = client;
+    req.apiKey = apiKey;
 
     next();
   }

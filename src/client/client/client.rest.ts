@@ -38,6 +38,21 @@ export class ClientRestClient extends RestClient {
     return response.getData();
   }
 
+  async regenerateCredential(code: string) {
+    const requestData: RestRequest = {
+      url: this.getUrl(`/clients/${code}/credentials/regenerate`),
+      method: 'POST',
+    };
+
+    const response = await this.send(requestData);
+
+    if (response.getStatusCode() === 404) {
+      throw new HttpException('Client not found.', 404);
+    }
+
+    return response.getData();
+  }
+
   async getClients(paginationData: PaginationData) {
     const requestData: RestRequest = {
       url: this.getUrl(`/clients`),

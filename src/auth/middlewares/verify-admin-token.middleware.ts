@@ -34,6 +34,7 @@ export class VerifyAdminTokenMiddleware implements NestMiddleware {
     }
 
     req.client = client;
+    req.apiKey = apiKey;
 
     next();
   }

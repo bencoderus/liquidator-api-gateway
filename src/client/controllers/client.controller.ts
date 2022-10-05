@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiKey } from '../../auth/decorators/api-key.decorator';
 import { Auth } from '../../auth/decorators/auth.decorator';
+import { IClientRequest } from '../../common/interfaces/client-request.interface';
 import { SuccessResponse } from '../../common/types/rest-response.type';
 import { sendResponse } from '../../common/utils/helper.util';
 import { ClientService } from '../services/client.service';
@@ -12,6 +14,19 @@ export class ClientController {
   @Get('profile')
   public async getProfile(@Auth() client: Client): Promise<SuccessResponse> {
     return sendResponse('Profile retrieved successfully.', client);
+  }
+
+  @Post('credentials/regenerate')
+  public async regenerateCredential(
+    @Auth() client: Client,
+    @ApiKey() apiKey: string,
+  ): Promise<SuccessResponse> {
+    const response = await this.clientService.regenerateCredential(
+      client.code,
+      apiKey,
+    );
+
+    return sendResponse('Credential generated successfully.', response);
   }
 
   @Get('credentials')
