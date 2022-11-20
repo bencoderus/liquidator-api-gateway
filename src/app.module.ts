@@ -4,7 +4,7 @@ import { RateModule } from './rate/modules/rate.module';
 import { ClientModule } from './client/modules/client.module';
 import { TradeModule } from './trade/modules/trade.module';
 import { WalletModule } from './wallet/modules/wallet.module';
-import { NotificationModule } from './notification/modules/notification.module';
+import { OtpModule } from './otp/modules/otp.module';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { NotificationModule } from './notification/modules/notification.module';
     ClientModule,
     TradeModule,
     WalletModule,
-    NotificationModule,
+    OtpModule,
   ],
 })
 export class AppModule {}

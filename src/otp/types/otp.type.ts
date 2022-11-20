@@ -1,6 +1,5 @@
 export type SendOtpRequest = {
   clientCode: string;
-  clientEmail: string;
   purpose: string;
 };
 

@@ -11,12 +11,12 @@ export class OtpController {
   constructor(private service: OtpService) {}
 
   @Post('send')
-  async getRates(
+  public async sendOtp(
     @Auth() client: Client,
     @Body() data: SendOtpDto,
   ): Promise<SuccessResponse> {
-    const otp = await this.service.sendOtp(client, data.purpose);
+    const otp = await this.service.sendOtp(client.code, data.purpose);
 
-    return sendResponse('Otp sent successfully.', otp);
+    return sendResponse('Otp sent successfully.');
   }
 }

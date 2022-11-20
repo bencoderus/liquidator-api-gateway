@@ -1,7 +1,11 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RestClient, RestRequest, RestParser } from '@liquidator/common';
-import { WalletData } from '../type/wallet.type';
+import {
+  WalletData,
+  WalletTransferRequest,
+  WalletTransferResponse,
+} from '../type/wallet.type';
 import { PaginationData } from '../../common/types/pagination.type';
 
 @Injectable()
@@ -27,6 +31,26 @@ export class WalletRestClient extends RestClient {
     });
 
     return response.getData();
+  }
+
+  public async transfer(
+    data: WalletTransferRequest,
+  ): Promise<WalletTransferResponse> {
+    const url = this.getUrl(`/wallets/transfer`);
+
+    const response = await this.send({
+      url,
+      method: 'POST',
+      data,
+    });
+
+    const responseData = response.getData();
+
+    if (response.clientError()) {
+      throw new HttpException(responseData.message, response.getStatusCode());
+    }
+
+    return responseData;
   }
 
   public async getWalletHistory(

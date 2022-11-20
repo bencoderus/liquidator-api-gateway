@@ -1,10 +1,11 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Auth } from '../../auth/decorators/auth.decorator';
 import { Client } from '../../client/types/client.type';
 import { Pagination } from '../../common/decorators/pagination.decorator';
 import { PaginationData } from '../../common/types/pagination.type';
 import { SuccessResponse } from '../../common/types/rest-response.type';
 import { sendResponse } from '../../common/utils/helper.util';
+import { WalletTransferDto } from '../dto/transfer.dto';
 import { WalletService } from '../services/wallet.service';
 
 @Controller()
@@ -41,5 +42,15 @@ export class WalletController {
     const wallet = await this.walletService.getWallets(client.code);
 
     return sendResponse('Wallets retrieved successfully.', wallet);
+  }
+
+  @Post('/wallets/transfer')
+  public async transfer(
+    @Auth() client: Client,
+    @Body() body: WalletTransferDto,
+  ): Promise<SuccessResponse> {
+    await this.walletService.walletTransfer(client.code, body);
+
+    return sendResponse('Wallet transfer completed successfully.');
   }
 }
